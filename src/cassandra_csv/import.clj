@@ -59,7 +59,7 @@
                                         type (.getType cdefs idx)]
                                     (assoc! row-map key (convert-datatype str-val type)))))))))
                  (map progress/tick)
-                 (map #(alia/execute-async session ps {:values % :error-handler (fn [r] (println r))})))))))
+                 (map #(alia/execute-async session ps {:values % :error-handler (fn [r] (log/error r))})))))))
 
 (defn import-csv-file [file-name session cql]
   "imports a csv file into cassandra"
