@@ -1,4 +1,5 @@
 # cassandra-csv
+[![Build Status](https://travis-ci.org/ajitj/cassandra-csv.svg?branch=master)](https://travis-ci.org/ajitj/cassandra-csv)
 
 Cassandra export / import to / from csv utility
 
