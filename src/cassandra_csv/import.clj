@@ -42,8 +42,8 @@
         headers (map keyword (first data))
         params (vec (map (comp keyword #(.getName %)) (iterator-seq (.iterator cdefs))))
         len (count params)
-        excess-param (clojure.set/difference (into #{} params) (into #{} headers))]
-    (if (> (count excess-param) 0)
+        excess-param (clojure.set/difference (set params) (set headers))]
+    (if (pos? (count excess-param))
       (log/error "Cql has extra param(s) not available as CSV column" (seq excess-param))
       (dorun (->> (rest data)
                  (map

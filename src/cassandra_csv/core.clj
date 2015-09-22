@@ -24,12 +24,13 @@
    ["-h" "--help"]])
 
 (defn usage [options-summary]
-  (->> ["This utility exports / imports cassandra records to / from csv file."
-        ""
-        "Options:"
-        options-summary
-        ""]
-       (string/join \newline)))
+  (string/join
+    \newline
+    ["This utility exports / imports cassandra records to / from csv file."
+     ""
+     "Options:"
+     options-summary
+     ""]))
 
 (defn error-msg [errors]
   (str "The following errors occurred while parsing your command:\n\n"
