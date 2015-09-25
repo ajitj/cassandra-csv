@@ -16,9 +16,9 @@
    ["-f" "--file FILE" "CSV file name"
     :default "data.csv"]
    ["-s" "--fetch-size SIZE" "Fetch size for exporting large result sets to avoid request timeouts"
-    :default 5000                                           ;; same as driver default
+    ;; driver default is 5000
     :parse-fn #(Integer/parseInt %)
-    :validate [#(< 0 % 5001) "Must be a number between 1 and 5000"]]
+    :validate [#(< 0 % 5001) "Must be a number between 1 and 5000 both inclusive"]]
    ["-q" "--cql CQL" "Cql query to run"]
    ["-i" "--import" "import or if not specified export"]
    ["-h" "--help"]])
@@ -55,7 +55,7 @@
   (let [{:keys [options errors summary]} (clojure.tools.cli/parse-opts args cli-options)]
     (cond
       (:help options) (exit 0 summary)
-      (not-every? options [:hostname :cql]) (exit 1 (usage summary))
+      (not-every? options [:cql]) (exit 1 (usage summary))
       errors (exit 1 (error-msg errors)))
     (let [cluster (get-cluster (:hostname options))
           session (get-session cluster)
