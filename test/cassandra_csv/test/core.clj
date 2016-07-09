@@ -4,7 +4,6 @@
     [clojure.data :refer :all]
     [qbits.alia :refer :all]
     [qbits.alia.codec :refer :all]
-    [qbits.alia.codec.joda-time :refer :all]
     [cassandra-csv.export :refer :all]
     [cassandra-csv.import :refer :all]
     [cassandra-csv.core :refer :all])

@@ -1,8 +1,7 @@
 (ns cassandra-csv.export
   (:require [clojure.java.io :as io]
             [clj-progress.core :as progress]
-            [clojure.data.csv :as csv]
-            [qbits.alia.codec.joda-time :refer :all]))
+            [clojure.data.csv :as csv]))
 
 (defn write-csv
   "converts a sequence of maps to csv

@@ -4,7 +4,6 @@
             [clojure.java.io :as io]
             [clj-time.coerce :as tc]
             [clj-progress.core :as progress]
-            [qbits.alia.codec.joda-time :refer :all]
             [clojure.tools.logging :as log])
   (:use [cassandra-csv.cassandra])
   (:import (com.datastax.driver.core DefaultPreparedStatement DataType DataType$Name)
