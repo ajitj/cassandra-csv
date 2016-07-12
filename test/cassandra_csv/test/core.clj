@@ -35,6 +35,8 @@
 
 ;; helpers
 
+(def sort-result (partial sort-by :id))
+
 (use-fixtures
   :once
   (fn [test-runner]
@@ -106,52 +108,60 @@
     (try (progress-done) (catch Exception _ nil))))
 
 (deftest test-items-export-command-line
-  (is (= items-csv-data
-         (do
-           (-main "-f" "test/resources/test-items-export.csv" "-q" "SELECT * FROM cassandracsv.items")
-           (slurp "test/resources/test-items-export.csv")))))
+  (is (= (sort-result items-csv-data)
+         (sort-result
+           (do
+            (-main "-f" "test/resources/test-items-export.csv" "-q" "SELECT * FROM cassandracsv.items")
+            (slurp "test/resources/test-items-export.csv"))))))
 
 (deftest test-items-import-command-line
-  (is (= imported-items
-         (do
-           (-main "-f" "test/resources/items.csv" "-i" "-q" "INSERT INTO cassandracsv.importeditems (id, text, si) VALUES (:id, :text, :si)")
-           (doall (execute *session* "SELECT * FROM importeditems"))))))
+  (is (= (sort-result imported-items)
+         (sort-result
+           (do
+            (-main "-f" "test/resources/items.csv" "-i" "-q" "INSERT INTO cassandracsv.importeditems (id, text, si) VALUES (:id, :text, :si)")
+            (doall (execute *session* "SELECT * FROM importeditems")))))))
 
 (deftest test-counts-export-command-line
-  (is (= counts-csv-data
-         (do
-           (-main "-f" "test/resources/test-counts-export.csv" "-q" "SELECT * FROM cassandracsv.counts")
-           (slurp "test/resources/test-counts-export.csv")))))
+  (is (= (sort-result counts-csv-data)
+         (sort-result
+           (do
+            (-main "-f" "test/resources/test-counts-export.csv" "-q" "SELECT * FROM cassandracsv.counts")
+            (slurp "test/resources/test-counts-export.csv"))))))
 
 (deftest test-counts-import-command-line
-  (is (= imported-counts
-         (do
-           (-main "-f" "test/resources/counts.csv" "-i" "-q" "UPDATE cassandracsv.importedcounts SET count = count + :count WHERE id = :id")
-           (doall (execute *session* "SELECT * FROM importedcounts"))))))
+  (is (= (sort-result imported-counts)
+         (sort-result
+           (do
+            (-main "-f" "test/resources/counts.csv" "-i" "-q" "UPDATE cassandracsv.importedcounts SET count = count + :count WHERE id = :id")
+            (doall (execute *session* "SELECT * FROM importedcounts")))))))
 
 (deftest test-simple-table-export
-  (is (= items-csv-data
-         (let [writer (StringWriter.)]
-           (write-csv writer (execute *session* "SELECT * FROM items"))
-           (.toString writer)))))
+  (is (= (sort-result items-csv-data)
+         (sort-result
+           (let [writer (StringWriter.)]
+            (write-csv writer (execute *session* "SELECT * FROM items"))
+            (.toString writer))))))
 
 (deftest test-counter-table-export
-  (is (= counts-csv-data
-         (let [writer (StringWriter.)]
-           (write-csv writer (execute *session* "SELECT * FROM counts"))
-           (.toString writer)))))
+  (is (= (sort-result counts-csv-data)
+         (sort-result
+           (let [writer (StringWriter.)]
+            (write-csv writer (execute *session* "SELECT * FROM counts"))
+            (.toString writer))))))
 
 (deftest test-simple-table-import
-  (is (= imported-items
-         (let [reader (StringReader. items-csv-data)]
-           (process-csv reader *session* "INSERT INTO cassandracsv.importeditems (id, text, si) VALUES(:id, :text, :si)")
-           (doall (execute *session* "SELECT * FROM importeditems"))))))
+  (is (= (sort-result imported-items)
+         (sort-result
+           (let [reader (StringReader. items-csv-data)]
+            (process-csv reader *session* "INSERT INTO cassandracsv.importeditems (id, text, si) VALUES(:id, :text, :si)")
+            (doall (execute *session* "SELECT * FROM importeditems")))))))
 
 (deftest test-counter-table-import
-  (is (= imported-counts
-         (let [reader (StringReader. counts-csv-data)]
-           (process-csv reader *session* "UPDATE cassandracsv.importedcounts SET count = count + :count WHERE id = :id")
-           (doall (execute *session* "SELECT * FROM importedcounts"))))))
+  (is (= (sort-result imported-counts)
+         (sort-result
+           (let [reader (StringReader. counts-csv-data)]
+            (process-csv reader *session* "UPDATE cassandracsv.importedcounts SET count = count + :count WHERE id = :id")
+            (doall (execute *session* "SELECT * FROM importedcounts")))))))
 
 ;; need better assertion or may be we should just raise error
 (deftest test-counter-table-import-with-non-match-param
